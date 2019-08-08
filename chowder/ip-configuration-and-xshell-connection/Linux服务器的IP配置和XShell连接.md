@@ -40,7 +40,7 @@ Linux：CentOS 7 或 RedHat
 
 为了验证虚拟机是否可以通过主机进行IP访问，可以在主机中使用`ping`命令：
 
-![vm_04](C:/Users/SmallZ/Desktop/vm_04.png)
+![vm_04](assets/vm_04.png)
 
 同样的，也可以在虚拟机中的Linux系统中使用ping命令，验证是否可以访问其他网络，例如：`ping baidu.com`
 
