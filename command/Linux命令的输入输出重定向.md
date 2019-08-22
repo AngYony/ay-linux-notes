@@ -22,7 +22,17 @@ Linux命令的重定向分为：输入重定向和输出重定向。
 
 输入重定向的作用是把文件直接导入到命令中，实际使用的较少。
 
-下面的示例，使用输入重定向把error.txt文件导入给`wc -l`命令，统计一下文件中的内容行数：
+示例一，使用符号`命令 << 分界符`，直到用户输入end时，才执行ls命令。
+
+```shell
+[angyony_vm@angyony s3_sample]$ ls << end
+> a
+> b
+> end
+error.txt  readme.txt
+```
+
+示例二，使用输入重定向把error.txt文件导入给`wc -l`命令，统计一下文件中的内容行数：
 
 ```
 [angyony_vm@angyony s3_sample]$ wc -l < error.txt 
