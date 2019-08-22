@@ -73,42 +73,6 @@ etc/mtab
 
 
 
-#### grep命令
-
-`grep`命令用于在文本中执行关键词搜索，并显示匹配的结果。
-
-格式：
-
-```
-grep [选项] [文件]
-```
-
-说明：
-
-`grep`命令是用途最广泛的文本搜索匹配工具，常用的参数及其作用如下所述：
-
-- `-b`：将可执行文件(`binary`)当作文本文件（`text`）来搜索
-- `-c`：仅显示找到的行数
-- `-i`：忽略大小写
-- `-n`：用来显示搜索到信息的行号
-- `-v`：反向选择——仅列出没有“关键词”的行。
-
-示例，使用`grep`命令来查找出当前系统中不允许登录系统的所有用户信息 （在Linux系统中，`/etc/passwd`文件是保存着所有的用户信息，而一旦用户的登录终端被设置成`/sbin/nologin`，则不再允许登录系统）：
-
-```shell
-[root@Linuxprobe ~]# grep /sbin/nologin /etc/passwd
-bin:x:1:1:bin:/bin:/sbin/nologin
-daemon:x:2:2:daemon:/sbin:/sbin/nologin
-adm:x:3:4:adm:/var/adm:/sbin/nologin
-...
-```
-
-
-
-------
-
-
-
 #### find命令
 
 `find`命令用于按照指定条件来查找文件。
@@ -178,21 +142,4 @@ find: ‘/proc/6147/fdinfo/6’: No such file or directory
 
 
 
-
-
-------
-
-
-
-#### 参考资源
-
-- 《Linux就应该这么学》
-
-
-
-本文后续会随着知识的积累不断补充和更新，内容如有错误，欢迎指正。
-
-最后一次更新时间：2018-08-15
-
-------
 
