@@ -37,7 +37,7 @@ ifconfig [网络设备] [参数]
 
 执行结果：
 
-![ifconfig](images/ifconfig.jpg)
+![ifconfig](assets/ifconfig.jpg)
 
 
 
@@ -137,7 +137,7 @@ free [-h]
 
 执行结果：
 
-![free](images/free.jpg)
+![free](assets/free.jpg)
 
 上述结果中，红框部分代表的含义如下：
 
