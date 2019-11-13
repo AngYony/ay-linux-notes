@@ -150,6 +150,8 @@ poweroff
 [root@Linuxprobe 桌面]# poweroff
 ```
 
+同时使用`init 0`命令也可以实现关闭系统操作，但是不建议这么使用。
+
 
 
 ------
