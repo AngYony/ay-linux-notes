@@ -1,6 +1,8 @@
 # Linux用户身份操作命令
 
 - useradd
+- groupadd
+- usermod
 
 
 
@@ -50,9 +52,29 @@ uid=8888(wynologin) gid=8888(wynologin) 组=8888(wynologin)
 
 #### groupadd命令
 
-文字描述
+groupadd命令用于创建用户组。
 
 格式：
 
+```
+groupadd [选项] 群组名
+```
 
+说明：
+
+在工作中常常会把几个用户加入到同一个组里面，这样便可以针对一类用户统一安排权限。
+
+示例一，创建用户组testuser：
+
+```shell
+[root@localhost ~]# groupadd testuser
+```
+
+
+
+------
+
+
+
+#### usermod命令
 
