@@ -218,6 +218,12 @@ mkdir [选项] 目录
 
 ```
 
+示例，同时创建 a，b，c 多个目录：
+
+```shell
+[VM_AngYony@localhost studylinux]$ mkdir a b c
+```
+
 
 
 ------
