@@ -1,5 +1,9 @@
 # Linux 文件权限管理命令
 
+[TOC]
+
+
+
 ### 文件类型的区分
 
 | 字符 | 文件类型 | 字符 | 文件类型     |
@@ -42,57 +46,132 @@
 
 如果一个文件的权限为：`rwxrw-r--`，使用数字法表示就是：764，表示的含义是：其所有者拥有可读、可写、可执行的权限，其文件所属组拥有可读、可写的权限；而且其他人只有可读的权限。
 
+### 特殊权限：SUID、SGID 与 SBIT
+
+SUID、SGID 与 SBIT 是一种对文件权限进行设置的特殊功能，可以与一般权限同时使用，以弥补一般权限不能实现的功能。
+
+#### SUID
+
+SUID 是一种对二进制程序进行设置的特殊权限，可以让二进制程序的执行者临时拥有属主（文件所有者，**U**）的权限（仅对拥有执行权限的二进制程序有效）。
+
+一旦某个文件被赋予了 SUID 权限，那么该文件的**所有者权限**将会出现下述变化：
+
+- 如果所有者的权限是 `rwx`，那么将变为 `rws`（小写s）。
+- 如果所有者的权限是 `rw-`，那么将会变为`rwS`（大写S）。
+
+例如，查看 /bin/passwd 文件的权限，可以看到文件所有者的权限为rw**s**：
+
+```shell
+[root@localhost ~]# ls -l /bin/passwd
+-rwsr-xr-x. 1 root root 27856 8月   9 2019 /bin/passwd
+[root@localhost ~]# 
+```
+
+SUID 可以让文件的执行者临时拥有该文件的所有者的权限。
+
+#### SGID
+
+SGID 的主要用途：
+
+- 功能一：让文件的执行者临时拥有属组（文件所属组，**G**）的权限（对拥有执行权限的二进制程序进行设置）
+- 功能二：在某个目录中创建的文件自动继承该目录的用户组（只可以对目录进行设置）
+
+SGID的第一种功能是参考SUID而设计的，不同点在于执行程序的用户获取的不再是文件所有者的临时权限，而是获取到文件所属组的权限。并且SUID的权限变化体现在文件所有者部分（例如：-==rw**s**==r-xr-x），而SGID的权限变化体现在**文件所属组**部分（例如：-r-x==r-**s**==r-x）。
+
+功能二一般多用于目录的权限设置，在某个目录上设置SGID特殊权限位后，那么任何人在该目录中创建的任何文件都会归属于该目录的所属组，而不再是自己的基本用户组。
+
+例如，创建目录并指定权限为777：
+
+```shell
+[root@localhost ~]# cd /tmp
+[root@localhost tmp]# mkdir testdir
+[root@localhost tmp]# ls -ald testdir/
+drwxr-xr-x. 2 root root 6 11月  4 16:36 testdir/
+使用 chmod 命令赋予权限：
+[root@localhost tmp]# chmod -Rf 777 testdir/
+[root@localhost tmp]# ls -ald testdir/
+drwxrwxrwx. 2 root root 6 11月  4 16:36 testdir/
+```
+
+此时目录的权限为 rwx==rwx==rwx，接着为目录设置SGID特殊权限：
+
+```shell
+[root@localhost tmp]# chmod -Rf g+s testdir/
+[root@localhost tmp]# ls -ald testdir/
+drwxrwsrwx. 2 root root 6 11月  4 16:36 testdir/
+```
+
+此时目录的权限变为了rwx==rw**s**==rwx，切换回普通用户，在该目录中创建文件，并查看创建的文件信息：
+
+```
+[root@localhost tmp]# su - VM_AngYony
+[VM_AngYony@localhost ~]$ cd /tmp/testdir/
+[VM_AngYony@localhost testdir]$ echo "hello" > test.hello
+[VM_AngYony@localhost testdir]$ ls -al test.hello 
+-rw-rw-r--. 1 VM_AngYony root 6 11月  4 16:47 test.hello
+```
+
+可以看到，新创建的文件会自动继承其所在的目录的所属组名称（此处所属组为root，而在不指定SGID的情况下，默认创建的文件的所属组名为用户名本身VM_AngYony）。
+
+#### SBIT
+
+SBIT特殊权限位可确保用户只能删除自己的文件，而不能删除其他用户的文件。换句话说，当对某个目录设置了SBIT粘滞位（也称为保护位）权限后，那么该目录中的文件就只能被其所有者执行删除操作了。
+
+当目录被设置SBIT特殊权限位后，文件的**其他人权限**部分的x执行权限就会被替换成t或者T，原本有x执行权限则会写成t，原本没有x执行权限则会被写成T。
+
+```
+
+```
 
 
-#### 命令
 
-文字描述
+### 权限操作相关的命令
+
+#### chmod
+
+chmod 用来设置文件或目录的权限。
 
 格式：
 
 ```
-
+chmod [参数] 权限 文件或目录名称
 ```
 
 说明：
 
-文字描述
+针对目录进行操作时需要加上大写参数-R来表示递归操作，即对目录内所有的文件进行整体操作。
 
-示例：
+权限可以使用数字表示法。
+
+示例，如果要把一个文件的权限设置成其所有者可读可写可执行、所属组可读可写、其他人没有任何权限，则相应的字符法表示为rwxrw----，其对应的数字法表示为760：
 
 ```shell
-
+[VM_AngYony@localhost testdir]$ chmod 760 test.hello 
+[VM_AngYony@localhost testdir]$ ls -l test.hello 
+-rwxrw----. 1 VM_AngYony root 6 11月  4 16:47 test.hello
 ```
 
-执行结果
+#### chown
 
-
-
-------
-
-
-
-#### 命令
-
-文字描述
+chown 用于设置文件或目录的所有者和所属组。
 
 格式：
 
 ```
-
+chown [参数] 所有者:所属组 文件或目录名称
 ```
 
 说明：
 
-文字描述
+针对目录进行操作时需要加上大写参数-R来表示递归操作，即对目录内所有的文件进行整体操作。
 
-示例：
+示例，将test.hello文件的所有者指定为root，所属组指定为zhxy_group：
 
 ```shell
-
+[root@localhost testdir]# chown root:zhxy_group test.hello 
+[root@localhost testdir]# ll test.hello 
+-rwxrw----. 1 root zhxy_group 6 11月  4 16:47 test.hello
 ```
-
-执行结果
 
 
 
